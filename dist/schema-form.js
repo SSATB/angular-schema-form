@@ -2769,8 +2769,13 @@ angular.module('schemaForm').directive('schemaValidate', ['sfValidator', '$parse
 
           if (!result.valid) {
             // it is invalid, return undefined (no model update)
-            ngModel.$setValidity('tv4-' + result.error.code, false);
-            error = result.error;
+            if (!result.error.dataPath || result.error.dataPath.lastIndexOf('/')===0) {
+              // only set errors on leaf-level fields.  this is a workaround for a bug where
+              // changes to the model to correct errors in nested array objects does not trigger a
+              // revalidation on parent elements, so the parent $errors never get cleared
+              ngModel.$setValidity('tv4-' + result.error.code, false);
+              error = result.error;
+            }
 
             // In Angular 1.3+ return the viewValue, otherwise we inadvertenly
             // will trigger a 'parse' error.
