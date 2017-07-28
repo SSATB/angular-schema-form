@@ -48,6 +48,7 @@ angular.module('schemaForm').directive('schemaValidate', ['sfValidator', '$parse
           Object.keys(ngModel.$error)
               .filter(function(k) { return k.indexOf('tv4-') === 0; })
               .forEach(function(k) { ngModel.$setValidity(k, true); });
+          ngModel.$setValidity('schemaForm', true); // clear out the custom schemaForm validation error, otherwise some array fields will never become valid
 
           if (!result.valid) {
             // it is invalid, return undefined (no model update)
